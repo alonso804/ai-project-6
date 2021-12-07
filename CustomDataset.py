@@ -17,9 +17,13 @@ class ImgDataset(Dataset):
     def __getitem__(self, index):
         img_path = os.path.join(self.root_dir, self.annotations.iloc[index, 0])
         image = io.imread(img_path)
-        y_label = torch.tensor(int(self.annotations.iloc[index, 1]))
+
+        y_img_path = os.path.join(
+            self.root_dir, self.annotations.iloc[index, 1])
+        y_image = io.imread(y_img_path)
 
         if self.transform:
             image = self.transform(image)
+            y_image = self.transform(y_image)
 
-        return (image, y_label)
+        return (image, y_image)
