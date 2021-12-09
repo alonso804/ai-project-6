@@ -13,7 +13,7 @@ class Encoder(nn.Module):
     def __init__(self):
         super(Encoder, self).__init__()
         self.conv1 = nn.Conv2d(
-            in_channels=1, out_channels=64, kernel_size=4, stride=2, padding=1)
+            in_channels=3, out_channels=64, kernel_size=4, stride=2, padding=1)
         self.conv2 = nn.Conv2d(
             in_channels=64, out_channels=64*2, kernel_size=4, stride=2, padding=1)
         self.fc = nn.Linear(in_features=64*2*7*7, out_features=10)
@@ -33,7 +33,7 @@ class Decoder(nn.Module):
         self.convTran1 = nn.ConvTranspose2d(
             in_channels=2*64, out_channels=64, kernel_size=4, stride=2, padding=1)
         self.convTran2 = nn.ConvTranspose2d(
-            in_channels=64, out_channels=1, kernel_size=4, stride=2, padding=1)
+            in_channels=64, out_channels=3, kernel_size=4, stride=2, padding=1)
 
     def forward(self, latent):
         out = self.fc(latent)
