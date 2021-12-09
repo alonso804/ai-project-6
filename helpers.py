@@ -33,15 +33,8 @@ def show_img(imgs, name, size=3, color=True):
 
 def show(out, title=''):
     print(title)
-    # plt.imshow(out.permute(1, 2, 0))
-    plt.imshow(UnNormalize(out, (0.5, 0.5, 0.5, 0.5), (0.5, 0.5, 0.5, 0.5)).permute(
-        1, 2, 0))
-    # plt.imshow((UnNormalize(out, (0.5, 0.5, 0.5, 0.5), (0.5, 0.5, 0.5, 0.5)).permute(
-    # 1, 2, 0).numpy() * 255).astype(np.uint8))
-
-    # out = out.permute(0, 1, 2)
-    # grilla = torchvision.utils.make_grid(out, 10, 5)
-    # plt.imshow(transforms.ToPILImage()(grilla).convert('RGB'), 'jet')
+    plt.imshow(UnNormalize(out, (0.5, 0.5, 0.5, 0.5),
+               (0.5, 0.5, 0.5, 0.5)).permute(1, 2, 0))
     plt.show()
 
 
@@ -56,7 +49,6 @@ def get_sets(train_path, val_path, root_dir='./'):
         csv_file=train_path,
         root_dir=root_dir,
         transform=torchvision.transforms.Compose([
-            # transforms.ToPILImage(),
             transforms.ToTensor(),
             transforms.Normalize((0.5,), (0.5,))
         ]))
@@ -65,7 +57,6 @@ def get_sets(train_path, val_path, root_dir='./'):
         csv_file=val_path,
         root_dir=root_dir,
         transform=torchvision.transforms.Compose([
-            # transforms.ToPILImage(),
             transforms.ToTensor(),
             transforms.Normalize((0.5,), (0.5,))
         ]))

@@ -4,8 +4,6 @@ import torchvision
 import torchvision.transforms as transforms
 import torch.nn.functional as F
 
-import cv2
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -52,10 +50,11 @@ def main():
         test_set
     )
 
-    img, y_img = train_set[0]
+    img, y_img = train_set[10]
     print(img.size())
 
     show(img)
+    show(y_img)
 
     capacity = 64
     latent_dims = 10
