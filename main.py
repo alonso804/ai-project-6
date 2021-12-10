@@ -17,13 +17,12 @@ def train(model, train_loader, val_loader, epochs, loss_fn, optimizer, device):
         train_loss_avg.append(0)
         num_batches = 0
 
-        for image_batch, _ in train_loader:
-            image_batch = image_batch.to(device)
-          #  print(image_batch.size())
+        for img, _ in train_loader:
+            img = img.view(img.size(0), -1)
+            img = img.to(device)
 
-            image_batch_recon = model(image_batch)
-           # print(image_batch_recon.size())
-            loss = loss_fn(image_batch_recon, image_batch)
+            img_recon = model(img)
+            loss = loss_fn(img_recon, img)
 
             optimizer.zero_grad()
             loss.backward()
@@ -53,11 +52,9 @@ def main():
     img, y_img = train_set[10]
     print(img.size())
 
-    show(img)
-    show(y_img)
+    # show(img)
+    # show(y_img)
 
-    capacity = 64
-    latent_dims = 10
     learning_rate = 0.001
     epochs = 20
 
@@ -70,9 +67,10 @@ def main():
 
     autoencoder.train()
 
-    # loss_result = train(autoencoder, train_loader, epochs, loss)
+    loss_result = train(autoencoder, train_loader,
+                        val_loader, epochs, loss, optimizer, device)
 
-    # torch.save(autoencoder.state_dict(), "./Results/autoencoder.mdl")
+    torch.save(autoencoder.state_dict(), "./Results/autoencoder.mdl")
 
 
 if __name__ == "__main__":

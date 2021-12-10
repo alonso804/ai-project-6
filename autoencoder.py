@@ -12,34 +12,34 @@ import math
 class Encoder(nn.Module):
     def __init__(self):
         super(Encoder, self).__init__()
-        self.conv1 = nn.Conv2d(
-            in_channels=3, out_channels=64, kernel_size=4, stride=2, padding=1)
-        self.conv2 = nn.Conv2d(
-            in_channels=64, out_channels=64*2, kernel_size=4, stride=2, padding=1)
-        self.fc = nn.Linear(in_features=64*2*7*7, out_features=10)
+        self.f1 = nn.Linear(28 * 28 * 4, 28 * 28)
+        self.f2 = nn.Linear(28 * 28, 196)
+        self.f3 = nn.Linear(196, 49)
+        self.f4 = nn.Linear(49, 7)
 
     def forward(self, image):
-        out = F.relu(self.conv1(image))
-        out = F.relu(self.conv2(out))
-        out = out.view(out.size(0), -1)
-        z = self.fc(out)
+        out = F.relu(self.f1(image))
+        out = F.relu(self.f2(out))
+        out = F.relu(self.f3(out))
+        out = F.relu(self.f4(out))
+        z = F.relu(out)
         return z
 
 
 class Decoder(nn.Module):
     def __init__(self):
         super(Decoder, self).__init__()
-        self.fc = nn.Linear(in_features=10, out_features=2*64*7*7)
-        self.convTran1 = nn.ConvTranspose2d(
-            in_channels=2*64, out_channels=64, kernel_size=4, stride=2, padding=1)
-        self.convTran2 = nn.ConvTranspose2d(
-            in_channels=64, out_channels=3, kernel_size=4, stride=2, padding=1)
+        self.f1 = nn.Linear(7, 49)
+        self.f2 = nn.Linear(49, 196)
+        self.f3 = nn.Linear(196, 28 * 28)
+        self.f4 = nn.Linear(28 * 28, 28 * 28 * 4)
 
-    def forward(self, latent):
-        out = self.fc(latent)
-        out = out.view(out.size(0), 64*2, 7, 7)
-        out = F.relu(self.convTran1(out))
-        out = torch.tanh(self.convTran2(out))
+    def forward(self, z):
+        out = F.relu(self.f1(z))
+        out = F.relu(self.f2(out))
+        out = F.relu(self.f3(out))
+        out = F.relu(self.f4(out))
+        out = torch.tanh(out)
         return out
 
 
@@ -49,7 +49,7 @@ class Autoencoder(nn.Module):
         self.encoder = Encoder()
         self.decoder = Decoder()
 
-    def forward(self, x):
-        latent = self.encoder(x)
-        x_recon = self.decoder(latent)
-        return x_recon
+    def forward(self, image):
+        z = self.encoder(image)
+        out = self.decoder(z)
+        return out
