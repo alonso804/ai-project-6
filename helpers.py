@@ -50,7 +50,7 @@ def get_sets(train_path, val_path, root_dir='./'):
         root_dir=root_dir,
         transform=torchvision.transforms.Compose([
             transforms.ToTensor(),
-            transforms.Resize((28, 28)),
+            # transforms.Resize((28, 28)),
             transforms.Normalize((0.5,), (0.5,))
         ]))
 
@@ -58,8 +58,8 @@ def get_sets(train_path, val_path, root_dir='./'):
         csv_file=val_path,
         root_dir=root_dir,
         transform=torchvision.transforms.Compose([
-            transforms.Resize((28, 28)),
             transforms.ToTensor(),
+            # transforms.Resize((28, 28)),
             transforms.Normalize((0.5,), (0.5,))
         ]))
 

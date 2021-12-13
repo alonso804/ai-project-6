@@ -12,15 +12,19 @@ import math
 class Encoder(nn.Module):
     def __init__(self):
         super(Encoder, self).__init__()
-        self.f1 = nn.Linear(28 * 28 * 4, 28 * 28)
-        self.f2 = nn.Linear(28 * 28, 196)
-        self.f3 = nn.Linear(196, 49)
-        self.f4 = nn.Linear(49, 7)
+        self.f1 = nn.Conv2d(4, 16, 3, stride=2, padding=1)  # 128
+        self.f2 = nn.Conv2d(16, 32, 3, stride=2, padding=1)  # 64
+        self.f3 = nn.Conv2d(32, 64, 3, stride=2, padding=1)  # 32
+        self.f4 = nn.Conv2d(64, 128, 32)
 
     def forward(self, image):
+        #print('out0:', image.shape)
         out = F.relu(self.f1(image))
+        #print('out1:', out.shape)
         out = F.relu(self.f2(out))
+        #print('out2:', out.shape)
         out = F.relu(self.f3(out))
+        #print('out3:', out.shape)
         out = F.relu(self.f4(out))
         z = F.relu(out)
         return z
@@ -29,10 +33,13 @@ class Encoder(nn.Module):
 class Decoder(nn.Module):
     def __init__(self):
         super(Decoder, self).__init__()
-        self.f1 = nn.Linear(7, 49)
-        self.f2 = nn.Linear(49, 196)
-        self.f3 = nn.Linear(196, 28 * 28)
-        self.f4 = nn.Linear(28 * 28, 28 * 28 * 4)
+        self.f1 = nn.ConvTranspose2d(128, 64, 32)
+        self.f2 = nn.ConvTranspose2d(
+            64, 32, 3, stride=2, padding=1, output_padding=1)
+        self.f3 = nn.ConvTranspose2d(
+            32, 16, 3, stride=2, padding=1, output_padding=1)
+        self.f4 = nn.ConvTranspose2d(
+            16, 4, 3, stride=2, padding=1, output_padding=1)
 
     def forward(self, z):
         out = F.relu(self.f1(z))

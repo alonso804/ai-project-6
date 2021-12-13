@@ -13,16 +13,19 @@ from autoencoder import Autoencoder
 
 def train(model, train_loader, val_loader, epochs, loss_fn, optimizer, device):
     train_loss_avg = []
+    val_loss_avg = []
     for epoch in range(epochs):
         train_loss_avg.append(0)
+        val_loss_avg.append(0)
         num_batches = 0
+        num_batches_val = 0
 
-        for img, _ in train_loader:
-            img = img.view(img.size(0), -1)
+        for img, y_img in train_loader:
+            y_img = y_img.to(device)
             img = img.to(device)
 
             img_recon = model(img)
-            loss = loss_fn(img_recon, img)
+            loss = loss_fn(img_recon, y_img)
 
             optimizer.zero_grad()
             loss.backward()
@@ -31,10 +34,22 @@ def train(model, train_loader, val_loader, epochs, loss_fn, optimizer, device):
             train_loss_avg[-1] += loss.item()
             num_batches += 1
 
+        for img, y_img in val_loader:
+            y_img = y_img.to(device)
+            img = img.to(device)
+
+            img_recon = model(img)
+            loss = loss_fn(img_recon, y_img)
+
+            val_loss_avg[-1] += loss.item()
+            num_batches_val += 1
+
+        val_loss_avg[-1] /= num_batches_val
         train_loss_avg[-1] /= num_batches
-        print('Epoch [%d / %d] average reconstruction error: %f' %
-              (epoch+1, epochs, train_loss_avg[-1]))
-    return train_loss_avg
+        print('Epoch [%d / %d] train error: %f - val error: %f' %
+              (epoch+1, epochs, train_loss_avg[-1], val_loss_avg[-1]))
+
+    return train_loss_avg, val_loss_avg
 
 
 def main():
@@ -52,8 +67,8 @@ def main():
     img, y_img = train_set[10]
     print(img.size())
 
-    # show(img)
-    # show(y_img)
+    show(img)
+    show(y_img)
 
     learning_rate = 0.001
     epochs = 20
@@ -70,7 +85,7 @@ def main():
     loss_result = train(autoencoder, train_loader,
                         val_loader, epochs, loss, optimizer, device)
 
-    torch.save(autoencoder.state_dict(), "./Results/autoencoder.mdl")
+    torch.save(autoencoder.state_dict(), "./Results/autoencoder-unet.mdl")
 
 
 if __name__ == "__main__":
