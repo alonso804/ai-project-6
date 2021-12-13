@@ -70,7 +70,7 @@ def main():
     show(img)
     show(y_img)
 
-    learning_rate = 0.001
+    learning_rate = 0.01
     epochs = 20
 
     autoencoder = Autoencoder().to(device)
