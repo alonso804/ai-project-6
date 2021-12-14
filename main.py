@@ -85,7 +85,7 @@ def main():
     loss_result = train(autoencoder, train_loader,
                         val_loader, epochs, loss, optimizer, device)
 
-    torch.save(autoencoder.state_dict(), "./Results/autoencoder-unet.mdl")
+    torch.save(autoencoder.state_dict(), "./Results/autoencoder-n5-tanh.mdl")
 
 
 if __name__ == "__main__":
