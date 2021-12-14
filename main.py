@@ -67,8 +67,8 @@ def main():
     img, y_img = train_set[10]
     print(img.size())
 
-    show(img)
-    show(y_img)
+    # show(img)
+    # show(y_img)
 
     learning_rate = 0.01
     epochs = 20
